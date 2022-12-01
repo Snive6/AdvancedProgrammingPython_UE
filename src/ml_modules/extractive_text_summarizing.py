@@ -4,9 +4,9 @@ from string import punctuation
 from heapq import nlargest
 
 
-def summarize(text, per):
+def summarize(text_process, per):
     nlp = spacy.load('en_core_web_sm')
-    doc = nlp(text)
+    doc = nlp(text_process)
     word_frequencies = {}
 
     for word in doc:
@@ -37,12 +37,19 @@ def summarize(text, per):
 
 
 if __name__ == "__main__":
-    from newspaper import Article
+    text_example = 'Machine learning (ML) is the scientific study of algorithms and statistical models that computer ' \
+                   'systems use to progressively improve their performance on a specific task. Machine learning ' \
+                   'algorithms build a mathematical model of sample data, known as “training data”, in order to make ' \
+                   'predictions or decisions without being explicitly programmed to perform the task. Machine ' \
+                   'learning algorithms are used in the applications of email filtering, detection of network ' \
+                   'intruders, and computer vision, where it is infeasible to develop an algorithm of specific ' \
+                   'instructions for performing the task. Machine learning is closely related to computational ' \
+                   'statistics, which focuses on making predictions using computers. The study of mathematical ' \
+                   'optimization delivers methods, theory and application domains to the field of machine learning. ' \
+                   'Data mining is a field of study within machine learning and focuses on exploratory data analysis ' \
+                   'through unsupervised learning. In its application across business problems, machine learning is ' \
+                   'also referred to as predictive analytics. '
 
-    url = 'https://www.sciencedaily.com/releases/2021/08/210811162816.htm'
-    article = Article(url)
-    article.download()
-    article.parse()
-
-    print(summarize(article.text, 0.05))
-    # python -m spacy download en_core_web_sm
+    summarized_text = summarize(text_example, 0.5)
+    print(summarized_text)
+    print(len(text_example), len(summarized_text))
