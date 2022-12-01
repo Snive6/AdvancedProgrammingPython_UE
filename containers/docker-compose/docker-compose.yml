@@ -1,0 +1,15 @@
+version: ''
+
+services: 
+  api:
+    build: 
+      context: 
+    ports: 
+      - 
+    web:
+    image:
+
+    volumes: 
+      - 
+    ports: 
+      - 
