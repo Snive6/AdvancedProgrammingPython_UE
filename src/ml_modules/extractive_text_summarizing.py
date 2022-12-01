@@ -52,4 +52,4 @@ if __name__ == "__main__":
 
     summarized_text = summarize(text_example, 0.5)
     print(summarized_text)
-    print(len(text_example), len(summarized_text))
+    print(f'Text length: {len(text_example)}. Length of summarized text: {len(summarized_text)}')
