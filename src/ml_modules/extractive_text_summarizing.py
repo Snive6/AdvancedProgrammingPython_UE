@@ -48,7 +48,7 @@ if __name__ == "__main__":
                    'optimization delivers methods, theory and application domains to the field of machine learning. ' \
                    'Data mining is a field of study within machine learning and focuses on exploratory data analysis ' \
                    'through unsupervised learning. In its application across business problems, machine learning is ' \
-                   'also referred to as predictive analytics. '
+                   'also referred to as predictive analytics.'
 
     summarized_text = summarize(text_example, 0.5)
     print(summarized_text)
