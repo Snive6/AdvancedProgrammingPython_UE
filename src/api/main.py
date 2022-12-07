@@ -16,14 +16,15 @@ class ModelName(str, Enum):
 @app.get("/get_text")
 async def root(text: str, model_name: ModelName, length_of_summarization: Optional[float] = 0.5):
     summarized_text = ''
-    if model_name is ModelName.extractive_summarizer:
-        summarized_text = summarize(text, length_of_summarization)
-    elif model_name is ModelName.model2:
-        # TODO: implement another algorithm
-        ...
-    elif model_name is ModelName.model3:
-        # TODO: implement another algorithm
-        ...
+    match model_name:
+        case ModelName.extractive_summarizer:
+            summarized_text = summarize(text, length_of_summarization)
+        case ModelName.model2:
+            # TODO: implement another algorithm
+            ...
+        case ModelName.model3:
+            # TODO: implement another algorithm
+            ...
     return summarized_text
 
 
@@ -32,4 +33,4 @@ async def say_hello(name: str):
     return {"message": f"Hello {name}"}
 
 if __name__ == "__main__":
-    uvicorn.run('main:app', host="0.0.0.0", port=8000, reload=True)
+    uvicorn.run('main:app', reload=True)
