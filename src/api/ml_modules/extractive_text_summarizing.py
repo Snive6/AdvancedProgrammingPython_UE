@@ -37,8 +37,7 @@ def summarize(text_process, per):
 
 
 if __name__ == "__main__":
-    f = open("example/text_example.txt", "r")
-    text_example = f.read()
+    text_example = open("example/text_example.txt", "r").read()
 
     summarized_text = summarize(text_example, 0.5)
     print(summarized_text)
