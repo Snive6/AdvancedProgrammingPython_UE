@@ -1,14 +1,13 @@
-from fastapi import FastAPI, HTTPException, Depends
+from fastapi import FastAPI, HTTPException, Depends, status
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from ml_modules.extractive_text_summarizing import summarize as default_summarizer
 from ml_modules.pegasus import pegasus_summarizer
+from ml_modules.t5_base import t5_summarizer
 from typing import Optional
 from enum import Enum
 import uvicorn
-from pymongo import MongoClient
 
 app: FastAPI = FastAPI()
-
 security = HTTPBasic()
 
 users = {"trudnY": "PaC13Nt"}
@@ -26,21 +25,28 @@ async def login(credentials: HTTPBasicCredentials = Depends(security)):
 
 class ModelName(str, Enum):
     extractive_summarizer = "extractive_summarizer"
-    t5_base = "pegasus"
-    model3 = "model3"
+    pegasus = "pegasus"
+    t5_base = "t5_base"
 
 
-@app.get("/get_text")
+responses = {
+    408: {"description": "Request Timeout"},
+    429: {"description": "Too many requests"},
+    500: {"description": "Internal Server Error"},
+}
+
+
+@app.get("/get_text", status_code=status.HTTP_200_OK,
+         responses={**responses})
 async def root(text: str, model_name: ModelName, length_of_summarization: Optional[float] = 0.5):
     summarized_text = ''
     match model_name:
         case ModelName.extractive_summarizer:
             summarized_text = default_summarizer(text, length_of_summarization)
-        case ModelName.t5_base:
+        case ModelName.pegasus:
             summarized_text = pegasus_summarizer(text, max_length=length_of_summarization*100)[0]
-        case ModelName.model3:
-            # TODO: implement another algorithm
-            ...
+        case ModelName.t5_base:
+            summarized_text = t5_summarizer(text, max_length=length_of_summarization*100)
     return summarized_text
 
 
