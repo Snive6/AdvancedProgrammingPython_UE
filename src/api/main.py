@@ -50,7 +50,7 @@ async def authenticate_user(username: str, password: str):
 
 
 # Login endpoint
-@app.post("/login")
+@app.post("/login", status_code=status.HTTP_200_OK)
 async def login(username: str, password: str):
     user = await authenticate_user(username, password)
     # Create a JWT token that contains the user's username and expires in 15 minutes
@@ -98,7 +98,7 @@ async def root(text: str, model_name: ModelName, access_token, db: MongoClient =
 
     # Save the summary and original text to the database
     collection = db["summaries"]
-    
+
     try:
         collection.insert_one({"summary": summarized_text, "original_text": text, "username": username})
     except:
@@ -107,7 +107,8 @@ async def root(text: str, model_name: ModelName, access_token, db: MongoClient =
     return {"summary": summarized_text}
 
 
-@app.get("/summaries")
+@app.get("/summaries", status_code=status.HTTP_200_OK,
+         responses={**responses})
 async def get_summaries(access_token: str):
     db = get_db()
     try:
