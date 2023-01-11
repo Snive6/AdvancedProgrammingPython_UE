@@ -2,7 +2,7 @@ from fastapi import FastAPI, HTTPException, Depends, status
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from ml_modules.extractive_text_summarizing import summarize as default_summarizer
 from ml_modules.pegasus import pegasus_summarizer
-from ml_modules.t5_base import t5_summarizer
+from ml_modules.bart_summarizer import bart_summarizer
 from typing import Optional
 from enum import Enum
 import uvicorn
@@ -26,7 +26,7 @@ async def login(credentials: HTTPBasicCredentials = Depends(security)):
 class ModelName(str, Enum):
     extractive_summarizer = "extractive_summarizer"
     pegasus = "pegasus"
-    t5_base = "t5_base"
+    bart = "bart"
 
 
 responses = {
@@ -38,15 +38,15 @@ responses = {
 
 @app.get("/get_text", status_code=status.HTTP_200_OK,
          responses={**responses})
-async def root(text: str, model_name: ModelName, length_of_summarization: Optional[float] = 0.5):
+async def root(text: str, model_name: ModelName, length_of_summarization: Optional[float] = 0.6):
     summarized_text = ''
     match model_name:
         case ModelName.extractive_summarizer:
             summarized_text = default_summarizer(text, length_of_summarization)
         case ModelName.pegasus:
             summarized_text = pegasus_summarizer(text, max_length=length_of_summarization*100)[0]
-        case ModelName.t5_base:
-            summarized_text = t5_summarizer(text, max_length=length_of_summarization*100)
+        case ModelName.bart:
+            summarized_text = bart_summarizer(text, max_length=length_of_summarization*100)
     return summarized_text
 
 
