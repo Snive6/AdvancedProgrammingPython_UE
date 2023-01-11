@@ -1,6 +1,7 @@
 from transformers import PegasusForConditionalGeneration, PegasusTokenizer
 import torch
 
+
 def pegasus_summarizer(text, max_length):
     model_name = 'google/pegasus-xsum'
     torch_device = 'cuda' if torch.cuda.is_available() else 'cpu'
