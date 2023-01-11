@@ -19,6 +19,9 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 # Dependency function to get database connection
 def get_db():
     client = MongoClient("mongodb://localhost:27017/")
+    client = MongoClient(
+        "mongodb+srv://admin:admin@cluster0.n8heu6j.mongodb.net/?retryWrites=true&w=majority")
+    # db = client.test
     db = client["ue_project_1"]
     return db
 
@@ -37,7 +40,8 @@ async def startup():
 
 
 # Function to authenticate a user by checking their username and password
-async def authenticate_user(username: str, password: str, db: MongoClient = Depends(get_db)):
+async def authenticate_user(username: str, password: str):
+    db = get_db()
     user_collection = db["users"]
     user = user_collection.find_one({"username": username})
     if not user or not pwd_context.verify(password, user["password"]):
@@ -49,11 +53,10 @@ async def authenticate_user(username: str, password: str, db: MongoClient = Depe
 @app.post("/login")
 async def login(username: str, password: str):
     user = await authenticate_user(username, password)
-
     # Create a JWT token that contains the user's username and expires in 15 minutes
     access_token = jwt.encode({"sub": user["username"], "exp": int(time.time() + 900)}, "secret", algorithm="HS256")
 
-    return {"access_token": access_token.decode()}
+    return {"access_token": access_token}
 
 
 @app.post("/logout")
@@ -104,8 +107,10 @@ async def root(text: str, model_name: ModelName, access_token, db: MongoClient =
 
     return {"summary": summarized_text}
 
+
 @app.get("/summaries")
-async def get_summaries(access_token: str, db: MongoClient = Depends(get_db)):
+async def get_summaries(access_token: str):
+    db = get_db()
     try:
         payload = jwt.decode(access_token, "secret", algorithms=["HS256"])
     except (jwt.DecodeError, jwt.ExpiredSignatureError):
@@ -114,7 +119,8 @@ async def get_summaries(access_token: str, db: MongoClient = Depends(get_db)):
     # Find all summaries for the current user in the database
     collection = db["summaries"]
     summaries = collection.find({"username": username})
-    return list(summaries)
+    return [{"_id": str(summary["_id"]), "username": summary["username"], "summary": summary["summary"],
+             "original_text": summary["original_text"]} for summary in summaries]
 
 if __name__ == "__main__":
     uvicorn.run('main:app', reload=True)
