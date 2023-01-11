@@ -18,7 +18,7 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 # Dependency function to get database connection
 def get_db():
-    client = MongoClient("mongodb://localhost:27017/")
+    # client = MongoClient("mongodb://localhost:27017/")
     client = MongoClient(
         "mongodb+srv://admin:admin@cluster0.n8heu6j.mongodb.net/?retryWrites=true&w=majority")
     # db = client.test
@@ -98,8 +98,7 @@ async def root(text: str, model_name: ModelName, access_token, db: MongoClient =
 
     # Save the summary and original text to the database
     collection = db["summaries"]
-    collection.insert_one({"summary": summarized_text, "original_text": text, "username": username})
-
+    
     try:
         collection.insert_one({"summary": summarized_text, "original_text": text, "username": username})
     except:
