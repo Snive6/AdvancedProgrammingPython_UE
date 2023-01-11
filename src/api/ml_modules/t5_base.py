@@ -10,6 +10,6 @@ def t5_summarizer(text, max_length):
 
 
 if __name__ == '__main__':
-    text_example = open("src/api/example/text_example", "r").read()
-    summary_text = t5_summarizer(text_example, max_length=100)
+    text_example = open("example/text_example", "r").read()
+    summary_text = t5_summarizer(text_example, max_length=50)
     print(summary_text)
