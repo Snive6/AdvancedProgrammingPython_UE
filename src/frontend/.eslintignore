@@ -1,0 +1,5 @@
+node_modules
+.*ignore
+build
+/**/env-config.js
+/cypress/support/*.js

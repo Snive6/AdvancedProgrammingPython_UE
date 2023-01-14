@@ -1,0 +1,15 @@
+.vscode
+build
+node_modules
+.env.develoment
+.eslintcache
+.gitignore
+.git
+.dockerignore
+.prettiercc
+.releaserc
+CHANGELOG.md
+package-lock.json
+Dockerfile
+/**/env-config.js
+README.md
