@@ -11,7 +11,7 @@ import jwt
 def client():
     return TestClient(app)
 
-
+## TODO: complete it. Returns status 422
 def test_get_summaries_valid_token(client):
     # Create a valid token
     access_token = jwt.encode({"sub": "test"}, "secret", algorithm="HS256")
@@ -24,7 +24,7 @@ def test_get_summaries_valid_token(client):
     assert response.json() == [{"_id": "test_id", "username": "test", "summary": "test summary",
                                 "original_text": "test text"}]
 
-
+## TODO: complete it. Returns status 422
 def test_get_summaries_invalid_token(client):
     # Create an invalid token
     access_token = "invalid_token"
