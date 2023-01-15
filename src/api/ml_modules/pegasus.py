@@ -8,7 +8,7 @@ def pegasus_summarizer(text, max_length):
     tokenizer = PegasusTokenizer.from_pretrained(model_name)
     model = PegasusForConditionalGeneration.from_pretrained(model_name).to(torch_device)
     batch = tokenizer.prepare_seq2seq_batch(text, truncation=True, padding='longest', return_tensors='pt',
-                                            max_length=100)
+                                            max_length=max_length)
     translated = model.generate(**batch)
     tgt_text = tokenizer.batch_decode(translated, skip_special_tokens=True)
     return tgt_text
