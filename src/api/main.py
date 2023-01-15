@@ -1,7 +1,7 @@
 from fastapi import FastAPI, HTTPException, Depends, status
-from ml_modules.extractive_text_summarizing import summarize as default_summarizer
+from ml_modules.extractive_text_summarizing import extractive_summarizer as default_summarizer
 from ml_modules.pegasus import pegasus_summarizer
-from ml_modules.bart_summarizer import bart_summarizer
+from ml_modules.bart import bart_summarizer
 from typing import Optional
 from enum import Enum
 import uvicorn
