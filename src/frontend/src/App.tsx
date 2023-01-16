@@ -13,6 +13,7 @@ import React from 'react';
 import { AuthLayout, HomeLayout, ProtectedLayout } from './layouts';
 import { Routes } from './types';
 import { ColorModeContext } from './contexts';
+import SummaryPage from './pages/SummaryPage';
 
 function getUserData(): Promise<string> {
   return new Promise((resolve) => {
@@ -30,6 +31,11 @@ const router = createBrowserRouter([
         element: <HomeLayout />,
         errorElement: <ErrorPage />,
         children: [
+          {
+            path: Routes.summary,
+            element: <SummaryPage />,
+            errorElement: <ErrorPage />,
+          },
           {
             path: Routes.home,
             element: <RootPage />,
@@ -51,6 +57,11 @@ const router = createBrowserRouter([
         element: <ProtectedLayout />,
         errorElement: <ErrorPage />,
         children: [
+          {
+            path: Routes.summary,
+            element: <SummaryPage />,
+            errorElement: <ErrorPage />,
+          },
           {
             path: Routes.history,
             element: <HistoryPage />,
