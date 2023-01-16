@@ -1,4 +1,7 @@
+import os
+
 import pymongo
+from dotenv import load_dotenv
 from fastapi.testclient import TestClient
 from main import create_test_user, pwd_context
 from main import app
@@ -9,6 +12,9 @@ from ml_modules.bart import bart_summarizer
 from main import get_db
 import uvicorn
 
+from src.api.const import MONGO_COLLECTION_NAME_SUMMARIES, JWT_SECRET_KEY, MONGO_COLLECTION_NAME_USERS
+
+load_dotenv()
 
 def test_bart_summarizer():
     text = open("ml_modules/example/text_example", "r").read()
@@ -58,7 +64,7 @@ def test_login():
     json_response = response.json()
     assert "access_token" in json_response
     access_token = json_response["access_token"]
-    payload = jwt.decode(access_token, "secret", algorithms=["HS256"])
+    payload = jwt.decode(access_token, str(os.getenv(JWT_SECRET_KEY)), algorithms=["HS256"])
     assert payload["sub"] == "test"
     assert "exp" in payload
 
@@ -89,7 +95,7 @@ def test_summarize():
     # First, create a test user and log in to get an access token
     test_user = {"username": "test", "password": pwd_context.hash("test")}
     db = get_db()
-    user_collection = db["users"]
+    user_collection = db[str(os.getenv(MONGO_COLLECTION_NAME_USERS))]
     user_collection.insert_one(test_user)
     login_response = client.post("/login?username=test&password=test")
     access_token = login_response.json()["access_token"]
@@ -104,7 +110,7 @@ def test_summarize():
     assert "summary" in json_response
 
     # Check if the summary was saved in the database
-    collection = db["summaries"]
+    collection = db[str(os.getenv(MONGO_COLLECTION_NAME_SUMMARIES))]
     summary = collection.find({'username': 'test'}).sort([("_id", pymongo.DESCENDING)]).limit(1)[0]
     assert summary["summary"] == json_response["summary"]
     assert summary["original_text"] == text
