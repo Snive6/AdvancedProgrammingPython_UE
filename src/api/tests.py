@@ -1,11 +1,6 @@
 import pymongo
-import pytest
-from fastapi import HTTPException
 from fastapi.testclient import TestClient
-from main import authenticate_user, create_test_user, pwd_context
-from jwt.exceptions import ExpiredSignatureError, DecodeError
-from jwt import decode
-from pymongo import MongoClient
+from main import create_test_user, pwd_context
 from main import app
 import jwt
 from ml_modules.pegasus import pegasus_summarizer
@@ -119,4 +114,3 @@ if __name__ == '__main__':
     db = get_db()
     create_test_user(db)
     uvicorn.run('main:app', reload=True)
-
