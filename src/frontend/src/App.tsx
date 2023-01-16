@@ -1,25 +1,114 @@
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import {
+  ErrorPage,
+  HistoryPage,
+  ProfilePage,
+  RootPage,
+  SignInPage,
+  SignUpPage,
+} from './pages';
+import { ProtectedRoute } from './components';
+import { ThemeProvider, createTheme } from '@mui/material';
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { AuthLayout, HomeLayout, ProtectedLayout } from './layouts';
+import { Routes } from './types';
+import { ColorModeContext } from './contexts';
+import SummaryPage from './pages/SummaryPage';
+
+function getUserData(): Promise<string> {
+  return new Promise((resolve) => {
+    const user = window.localStorage.getItem('user') as string;
+    resolve(user);
+  });
+}
+
+const router = createBrowserRouter([
+  {
+    element: <AuthLayout />,
+    loader: getUserData,
+    children: [
+      {
+        element: <HomeLayout />,
+        errorElement: <ErrorPage />,
+        children: [
+          {
+            path: Routes.summary,
+            element: <SummaryPage />,
+            errorElement: <ErrorPage />,
+          },
+          {
+            path: Routes.home,
+            element: <RootPage />,
+            errorElement: <ErrorPage />,
+          },
+          {
+            path: Routes.singup,
+            element: <SignUpPage />,
+            errorElement: <ErrorPage />,
+          },
+          {
+            path: Routes.signin,
+            element: <SignInPage />,
+            errorElement: <ErrorPage />,
+          },
+        ],
+      },
+      {
+        element: <ProtectedLayout />,
+        errorElement: <ErrorPage />,
+        children: [
+          {
+            path: Routes.summary,
+            element: <SummaryPage />,
+            errorElement: <ErrorPage />,
+          },
+          {
+            path: Routes.history,
+            element: <HistoryPage />,
+            errorElement: <ErrorPage />,
+          },
+          {
+            path: Routes.profile,
+            element: (
+              <ProtectedRoute>
+                <ProfilePage />
+              </ProtectedRoute>
+            ),
+            errorElement: <ErrorPage />,
+          },
+        ],
+      },
+    ],
+  },
+]);
 
 function App() {
+  const [mode, setMode] = React.useState<'light' | 'dark'>('light');
+  const colorMode = React.useMemo(
+    () => ({
+      toggleColorMode: () => {
+        setMode((prevMode) => (prevMode === 'light' ? 'dark' : 'light'));
+      },
+    }),
+    [],
+  );
+
+  const theme = React.useMemo(
+    () =>
+      createTheme({
+        palette: {
+          mode,
+        },
+      }),
+    [mode],
+  );
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <ColorModeContext.Provider value={colorMode}>
+      <ThemeProvider theme={theme}>
+        <RouterProvider router={router} />
+      </ThemeProvider>
+    </ColorModeContext.Provider>
   );
 }
 

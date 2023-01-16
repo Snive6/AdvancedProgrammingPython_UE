@@ -1,0 +1,10 @@
+# Ignore files:
+.eslintignore
+index.js
+
+# Ignore artifacts:
+build
+coverage
+
+# Ignore all HTML files:
+*.html
