@@ -28,7 +28,7 @@ export default function AppBar({ children }: { children: React.ReactNode }) {
         <Toolbar sx={{ flexWrap: 'wrap' }}>
           <Typography variant="h6" color="inherit" noWrap sx={{ flexGrow: 1 }}>
             <Link variant="inherit" color="inherit" href="/">
-              Company name
+              FastSummary
             </Link>
           </Typography>
           <nav>

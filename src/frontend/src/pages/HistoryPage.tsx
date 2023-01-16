@@ -1,3 +1,5 @@
+import { MainContainer } from '../components';
+
 export default function HistoryPage() {
-  return <div>History</div>;
+  return <MainContainer>History</MainContainer>;
 }

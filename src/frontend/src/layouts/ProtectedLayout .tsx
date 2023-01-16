@@ -20,6 +20,14 @@ export default function ProtectedLayout() {
     <div>
       <AppBar>
         <Button
+          href={Routes.summary}
+          color="inherit"
+          variant="text"
+          sx={{ my: 1, mx: 1.5 }}
+        >
+          Summary
+        </Button>
+        <Button
           href={Routes.history}
           color="inherit"
           variant="text"

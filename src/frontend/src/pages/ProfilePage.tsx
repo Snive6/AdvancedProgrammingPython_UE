@@ -1,3 +1,5 @@
+import { MainContainer } from '../components';
+
 export default function ProfilePage() {
-  return <div>Profile</div>;
+  return <MainContainer>Profile</MainContainer>;
 }

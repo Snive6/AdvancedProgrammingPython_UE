@@ -14,13 +14,11 @@ export default function AuthProvider({
   const [user, setUser] = useLocalStorage('user', userData);
   const navigate = useNavigate();
 
-  // call this function when you want to authenticate the user
   const login = async (data: LoginData) => {
     setUser(data.email);
     navigate(Routes.profile);
   };
 
-  // call this function to sign out logged in user
   const logout = () => {
     setUser(null);
     navigate(Routes.home, { replace: true });

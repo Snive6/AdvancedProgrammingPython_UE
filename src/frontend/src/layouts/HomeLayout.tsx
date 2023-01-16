@@ -15,6 +15,14 @@ export default function HomeLayout() {
   return (
     <React.Fragment>
       <AppBar>
+        <Button
+          href={Routes.summary}
+          color="inherit"
+          variant="text"
+          sx={{ my: 1, mx: 1.5 }}
+        >
+          Summary
+        </Button>
         <Button href={Routes.signin} variant="outlined" sx={{ my: 1, mx: 1.5 }}>
           Login
         </Button>

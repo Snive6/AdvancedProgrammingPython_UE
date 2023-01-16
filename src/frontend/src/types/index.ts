@@ -1,5 +1,6 @@
 export enum Routes {
   home = '/',
+  summary = '/summary',
   profile = '/profile',
   singup = '/registry',
   signin = '/login',
