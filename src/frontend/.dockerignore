@@ -9,7 +9,6 @@ node_modules
 .prettiercc
 .releaserc
 CHANGELOG.md
-package-lock.json
 Dockerfile
 /**/env-config.js
 README.md
