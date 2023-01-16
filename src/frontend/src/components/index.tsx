@@ -1,3 +1,5 @@
-import { ProtectedRoute } from './ProtectedRoute';
+import AppBar from './AppBar';
+import Copyright from './Copyright';
+import ProtectedRoute from './ProtectedRoute';
 
-export { ProtectedRoute };
+export { ProtectedRoute, AppBar, Copyright };

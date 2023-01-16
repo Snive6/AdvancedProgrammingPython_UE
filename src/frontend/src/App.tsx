@@ -1,47 +1,71 @@
-import './App.css';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import {
   ErrorPage,
+  HistoryPage,
   ProfilePage,
   RootPage,
   SignInPage,
-  SignOutPage,
   SignUpPage,
 } from './pages';
 import { ProtectedRoute } from './components';
 import { ThemeProvider, createTheme } from '@mui/material';
 import React from 'react';
+import { AuthLayout, HomeLayout, ProtectedLayout } from './layouts';
+import { Routes } from './types';
 import { ColorModeContext } from './contexts';
+
+function getUserData(): Promise<string> {
+  return new Promise((resolve) => {
+    const user = window.localStorage.getItem('user') as string;
+    resolve(user);
+  });
+}
 
 const router = createBrowserRouter([
   {
-    path: '/',
-    element: <RootPage />,
-    errorElement: <ErrorPage />,
+    element: <AuthLayout />,
+    loader: getUserData,
     children: [
       {
-        path: '/register',
-        element: <SignUpPage />,
+        element: <HomeLayout />,
         errorElement: <ErrorPage />,
+        children: [
+          {
+            path: Routes.home,
+            element: <RootPage />,
+            errorElement: <ErrorPage />,
+          },
+          {
+            path: Routes.singup,
+            element: <SignUpPage />,
+            errorElement: <ErrorPage />,
+          },
+          {
+            path: Routes.signin,
+            element: <SignInPage />,
+            errorElement: <ErrorPage />,
+          },
+        ],
       },
       {
-        path: '/login',
-        element: <SignInPage />,
+        element: <ProtectedLayout />,
         errorElement: <ErrorPage />,
-      },
-      {
-        path: '/logout',
-        element: <SignOutPage />,
-        errorElement: <ErrorPage />,
-      },
-      {
-        path: '/profile',
-        element: (
-          <ProtectedRoute>
-            <ProfilePage />
-          </ProtectedRoute>
-        ),
-        errorElement: <ErrorPage />,
+        children: [
+          {
+            path: Routes.history,
+            element: <HistoryPage />,
+            errorElement: <ErrorPage />,
+          },
+          {
+            path: Routes.profile,
+            element: (
+              <ProtectedRoute>
+                <ProfilePage />
+              </ProtectedRoute>
+            ),
+            errorElement: <ErrorPage />,
+          },
+        ],
       },
     ],
   },
@@ -71,7 +95,7 @@ function App() {
   return (
     <ColorModeContext.Provider value={colorMode}>
       <ThemeProvider theme={theme}>
-        <RouterProvider router={router} />;
+        <RouterProvider router={router} />
       </ThemeProvider>
     </ColorModeContext.Provider>
   );

@@ -1,8 +1,8 @@
 import ErrorPage from './ErrorPage';
+import HistoryPage from './HistoryPage';
 import ProfilePage from './ProfilePage';
 import RootPage from './RootPage';
 import SignInPage from './SignInPage';
-import SignOutPage from './SignOutPage';
 import SignUpPage from './SignUpPage';
 
 export {
@@ -10,6 +10,6 @@ export {
   RootPage,
   SignUpPage,
   SignInPage,
-  SignOutPage,
   ProfilePage,
+  HistoryPage,
 };
