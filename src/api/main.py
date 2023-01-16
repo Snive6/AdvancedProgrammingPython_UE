@@ -17,6 +17,13 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
 # Dependency function to get database connection
+def create_test_user(db):
+    hashed_password = pwd_context.hash("test")
+    test_user = {"username": "test", "password": hashed_password}
+    user_collection = db["users"]
+    user_collection.insert_one(test_user)
+
+
 def get_db():
     # client = MongoClient("mongodb://localhost:27017/")
     client = MongoClient(
@@ -24,13 +31,6 @@ def get_db():
     # db = client.test
     db = client["ue_project_1"]
     return db
-
-
-def create_test_user(db):
-    hashed_password = pwd_context.hash("test")
-    test_user = {"username": "test", "password": hashed_password}
-    user_collection = db["users"]
-    user_collection.insert_one(test_user)
 
 
 @app.on_event("startup")
@@ -92,9 +92,9 @@ async def root(text: str, model_name: ModelName, access_token, db: MongoClient =
         case ModelName.extractive_summarizer:
             summarized_text = default_summarizer(text, length_of_summarization)
         case ModelName.pegasus:
-            summarized_text = pegasus_summarizer(text, max_length=length_of_summarization*100)[0]
+            summarized_text = pegasus_summarizer(text, max_length=length_of_summarization * 100)[0]
         case ModelName.bart:
-            summarized_text = bart_summarizer(text, max_length=length_of_summarization*100)
+            summarized_text = bart_summarizer(text, max_length=length_of_summarization * 100)
 
     # Save the summary and original text to the database
     collection = db["summaries"]
@@ -121,6 +121,7 @@ async def get_summaries(access_token: str):
     summaries = collection.find({"username": username})
     return [{"_id": str(summary["_id"]), "username": summary["username"], "summary": summary["summary"],
              "original_text": summary["original_text"]} for summary in summaries]
+
 
 if __name__ == "__main__":
     uvicorn.run('main:app', reload=True)
