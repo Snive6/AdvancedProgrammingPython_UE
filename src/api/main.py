@@ -17,20 +17,19 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
 # Dependency function to get database connection
-def create_test_user(db):
-    hashed_password = pwd_context.hash("test")
-    test_user = {"username": "test", "password": hashed_password}
-    user_collection = db["users"]
-    user_collection.insert_one(test_user)
-
-
 def get_db():
-    # client = MongoClient("mongodb://localhost:27017/")
     client = MongoClient(
         "mongodb+srv://admin:admin@cluster0.n8heu6j.mongodb.net/?retryWrites=true&w=majority")
     # db = client.test
     db = client["ue_project_1"]
     return db
+
+
+def create_test_user(db):
+    hashed_password = pwd_context.hash("test")
+    test_user = {"username": "test", "password": hashed_password}
+    user_collection = db["users"]
+    user_collection.insert_one(test_user)
 
 
 @app.on_event("startup")
