@@ -4,7 +4,7 @@ from string import punctuation
 from heapq import nlargest
 
 
-def summarize(text_process, per):
+def extractive_summarizer(text_process, per):
     nlp = spacy.load('en_core_web_sm')
     doc = nlp(text_process)
     word_frequencies = {}
@@ -32,6 +32,7 @@ def summarize(text_process, per):
     summary = nlargest(select_length, sentence_scores, key=sentence_scores.get)
     final_summary = [word.text for word in summary]
     summary = ''.join(final_summary)
+    summary = " ".join(summary.split())
 
     return summary
 
@@ -39,6 +40,6 @@ def summarize(text_process, per):
 if __name__ == "__main__":
     text_example = open("example/text_example.txt", "r").read()
 
-    summarized_text = summarize(text_example, 0.5)
+    summarized_text = extractive_summarizer(text_example, 0.5)
     print(summarized_text)
     print(f'Text length: {len(text_example)}. Length of summarized text: {len(summarized_text)}')
