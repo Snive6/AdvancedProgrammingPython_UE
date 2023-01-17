@@ -18,8 +18,8 @@ class BartSummarizer:
 
 
 if __name__ == '__main__':
-    text_example = open("example/text_example", "r").read()
+    text_example = open("example/text_example.txt", "r").read()
     bs = BartSummarizer()
     summary_text = bs.summarize(text_example, max_length=100)
-    # summary_text = bart_summarizer(text_example, max_length=100)
+    # summary_text = bart_summarizer(text_example.txt, max_length=100)
     print(summary_text)
