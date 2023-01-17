@@ -28,8 +28,8 @@ class PegasusSummarizer:
 
 
 if __name__ == "__main__":
-    text_example = open("example/text_example", "r").read()
-    # summary_text = pegasus_summarizer(text_example, max_length=100)
+    text_example = open("example/text_example.txt", "r").read()
+    # summary_text = pegasus_summarizer(text_example.txt, max_length=100)
     ps = PegasusSummarizer()
     summary_text = ps.summarize(text_example, max_length=60)
     print(summary_text)
