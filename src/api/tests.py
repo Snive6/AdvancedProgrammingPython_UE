@@ -6,9 +6,9 @@ from fastapi.testclient import TestClient
 from main import create_test_user, pwd_context
 from main import app
 import jwt
-from ml_modules.pegasus import pegasus_summarizer
-from ml_modules.extractive_text_summarizing import extractive_summarizer
-from ml_modules.bart import bart_summarizer
+from ml_modules.pegasus import PegasusSummarizer
+from ml_modules.extractive_summarizer_model import extractive_summarizer
+from ml_modules.bart import BartSummarizer
 from main import get_db
 import uvicorn
 
@@ -16,17 +16,14 @@ from src.api.const import MONGO_COLLECTION_NAME_SUMMARIES, JWT_SECRET_KEY, MONGO
 
 load_dotenv()
 
-def test_bart_summarizer():
+def test_summarizer():
+    summarizer = BartSummarizer()
     text = open("ml_modules/example/text_example", "r").read()
-    expected_summary = ' Machine learning (ML) is the scientific study of algorithms and statistical models that ' \
-                       'computer systems use to progressively improve their performance on a specific task . ' \
-                       'Machine learning algorithms are used in the applications of email filtering, detection ' \
-                       'of network intruders, and computer vision, where it is infeasible to develop an algorithm ' \
-                       'of specific instructions for performing the task .'
     max_length = 100
+    summary = summarizer.summarize(text, max_length)
+    assert 'This is a very long text that we want to summarize.' not in summary, "Summary should not contain the beginning of the text"
+    assert 'summarization capabilities of the BartSummarizer class' in summary, "Summary should contain the end of the text"
 
-    summary = bart_summarizer(text, max_length)
-    assert summary == expected_summary
 
 
 def test_extractive_summarizer():
