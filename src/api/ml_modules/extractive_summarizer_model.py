@@ -52,7 +52,7 @@ def extractive_summarizer(text, per, nlp):
 
 
 if __name__ == "__main__":
-    text_example = open("example/text_example", "r").read()
+    text_example = open("example/text_example.txt", "r").read()
 
     # Loading the model once when the API is started
     nlp = spacy.load('en_core_web_sm')
