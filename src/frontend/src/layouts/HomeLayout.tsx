@@ -6,10 +6,10 @@ import { AppBar } from '../components';
 import { Routes } from '../types';
 
 export default function HomeLayout() {
-  const { user } = useAuth();
+  const { token } = useAuth();
 
-  if (user) {
-    return <Navigate to={Routes.history} />;
+  if (token) {
+    return <Navigate to={Routes.summary} />;
   }
 
   return (

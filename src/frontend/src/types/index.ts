@@ -15,9 +15,17 @@ export interface LoginData {
 }
 
 export type AuthContextType = {
-  user: string | null;
+  token: string | null;
   login: (data: LoginData) => Promise<void>;
   logout: () => void;
 };
 
 export const ApiUrlAdres = 'http://localhost:8000';
+
+export type LocalStorageKeys = 'token';
+
+export enum SumarizedModels {
+  extractive_summarizer = 'extractive_summarizer',
+  pegasus = 'pegasus',
+  bart = 'bart',
+}

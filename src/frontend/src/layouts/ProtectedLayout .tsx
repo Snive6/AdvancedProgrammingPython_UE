@@ -5,14 +5,14 @@ import { Button } from '@mui/material';
 import { Routes } from '../types';
 
 export default function ProtectedLayout() {
-  const { user } = useAuth();
+  const { token } = useAuth();
   const { logout } = useAuth();
 
   const handleClick = () => {
     logout();
   };
 
-  if (!user) {
+  if (!token) {
     return <Navigate to={Routes.home} />;
   }
 
