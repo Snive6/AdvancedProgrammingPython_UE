@@ -19,3 +19,5 @@ export type AuthContextType = {
   login: (data: LoginData) => Promise<void>;
   logout: () => void;
 };
+
+export const ApiUrlAdres = 'http://localhost:8000';

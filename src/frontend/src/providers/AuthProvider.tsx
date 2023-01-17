@@ -2,7 +2,8 @@ import { ReactNode, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useLocalStorage } from '../hooks';
 import { AuthContext } from '../contexts';
-import { LoginData, Routes } from '../types';
+import { ApiUrlAdres, LoginData, Routes } from '../types';
+import axios from 'axios';
 
 export default function AuthProvider({
   children,
@@ -16,11 +17,13 @@ export default function AuthProvider({
 
   const login = async (data: LoginData) => {
     setUser(data.email);
+    axios.post(`${ApiUrlAdres}/login`);
     navigate(Routes.profile);
   };
 
   const logout = () => {
     setUser(null);
+    axios.post(`${ApiUrlAdres}/logout`);
     navigate(Routes.home, { replace: true });
   };
 
