@@ -3,9 +3,9 @@ import {
   ErrorPage,
   HistoryPage,
   ProfilePage,
-  RootPage,
   SignInPage,
   SignUpPage,
+  SummaryPage,
 } from './pages';
 import { ProtectedRoute } from './components';
 import { ThemeProvider, createTheme } from '@mui/material';
@@ -13,7 +13,6 @@ import React from 'react';
 import { AuthLayout, HomeLayout, ProtectedLayout } from './layouts';
 import { Routes } from './types';
 import { ColorModeContext } from './contexts';
-import SummaryPage from './pages/SummaryPage';
 
 function getUserData(): Promise<string> {
   return new Promise((resolve) => {
@@ -38,7 +37,7 @@ const router = createBrowserRouter([
           },
           {
             path: Routes.home,
-            element: <RootPage />,
+            element: <SummaryPage />,
             errorElement: <ErrorPage />,
           },
           {

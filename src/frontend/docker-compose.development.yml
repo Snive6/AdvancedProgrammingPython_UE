@@ -1,6 +1,8 @@
 version: "3.10"
 services:
   front:
-    build: .
+    build:
+        dockerfile: Dockerfile
+        context: ./
     ports:
-      - "3000:3000"
+      - "3000:80"

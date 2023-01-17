@@ -1,6 +1,5 @@
 import { useState } from 'react';
-
-type LocalStorageKeys = 'user';
+import { LocalStorageKeys } from '../types';
 
 export default function useLocalStorage(
   key: LocalStorageKeys,

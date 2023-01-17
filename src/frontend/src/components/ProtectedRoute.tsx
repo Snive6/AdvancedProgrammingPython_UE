@@ -3,7 +3,7 @@ import { useAuth } from '../hooks';
 import { ReactElement } from 'react';
 
 const ProtectedRoute = ({ children }: { children: ReactElement }) => {
-  const { user } = useAuth();
+  const { token: user } = useAuth();
   return !user ? <Navigate to="/" /> : children;
 };
 
