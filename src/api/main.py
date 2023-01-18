@@ -1,11 +1,9 @@
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException, Depends, status
-from transformers import pipeline
-
 from ml_modules.extractive_summarizer_model import extractive_summarizer as default_summarizer
-import spacy
 from ml_modules.pegasus import PegasusSummarizer
 from ml_modules.bart import BartSummarizer
+import spacy
 from typing import Optional
 from enum import Enum
 import uvicorn
@@ -61,6 +59,9 @@ async def startup():
     nlp = spacy.load('en_core_web_sm')
     bart_model = BartSummarizer()
     pegasus_model = PegasusSummarizer()
+
+if nlp is None:
+    nlp = spacy.load('en_core_web_sm')
 
 
 # Function to authenticate a user by checking their username and password
