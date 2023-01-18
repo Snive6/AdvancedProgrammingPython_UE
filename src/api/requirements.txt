@@ -1,8 +1,9 @@
+python-3.9.16
 fastapi==0.88.0
 spacy==3.4.3
 pymongo==4.3.3
 transformers==4.25.1
-tensorflow==2.11.0
+tensorflow==2.8.0
 torch==1.13.1
 torchaudio==0.13.1
 torchvision==0.14.1
