@@ -1,8 +1,9 @@
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException, Depends, status
-from ml_modules.extractive_text_summarizing import extractive_summarizer as default_summarizer
-from ml_modules.pegasus import pegasus_summarizer
-from ml_modules.bart import bart_summarizer
+from ml_modules.extractive_summarizer_model import extractive_summarizer as default_summarizer
+from ml_modules.pegasus import PegasusSummarizer
+from ml_modules.bart import BartSummarizer
+import spacy
 from typing import Optional
 from enum import Enum
 import uvicorn
@@ -44,10 +45,23 @@ def create_test_user(db):
     user_collection.insert_one(test_user)
 
 
+nlp = None
+bart_model = None
+pegasus_model = None
+
+
 @app.on_event("startup")
 async def startup():
     db = get_db()
     create_test_user(db)
+
+    global nlp, bart_model, pegasus_model
+    nlp = spacy.load('en_core_web_sm')
+    bart_model = BartSummarizer()
+    pegasus_model = PegasusSummarizer()
+
+if nlp is None:
+    nlp = spacy.load('en_core_web_sm')
 
 
 # Function to authenticate a user by checking their username and password
@@ -102,11 +116,11 @@ async def root(text: str, model_name: ModelName, access_token, db: MongoClient =
     summarized_text = ''
     match model_name:
         case ModelName.extractive_summarizer:
-            summarized_text = default_summarizer(text, length_of_summarization)
+            summarized_text = default_summarizer(text, length_of_summarization, nlp=nlp)
         case ModelName.pegasus:
-            summarized_text = pegasus_summarizer(text, max_length=length_of_summarization * 100)[0]
+            summarized_text = pegasus_model.summarize(text, max_length=length_of_summarization * 100)
         case ModelName.bart:
-            summarized_text = bart_summarizer(text, max_length=length_of_summarization * 100)
+            summarized_text = bart_model.summarize(text, max_length=length_of_summarization * 100)
 
     # Save the summary and original text to the database
     collection = db[MONGO_COLLECTION_NAME_SUMMARIES]
