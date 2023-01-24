@@ -4,50 +4,78 @@ from string import punctuation
 from heapq import nlargest
 
 
-# Function to process the text, removing stop words and punctuation and creating a word frequency dictionary
 def process_text(text, nlp):
+    """
+    This function takes in the text and the nlp object and returns a dictionary
+    of word frequencies with words as keys and their frequency as values
+    """
     doc = nlp(text)
-    word_frequencies = {}
+    word_frequencies = count_word_frequencies(doc)
+    filtered_frequencies = filter_stop_words_and_punctuation(word_frequencies)
+    normalized_frequencies = normalize_frequencies(filtered_frequencies)
+    return normalized_frequencies
 
-    for word in doc:
-        if word.text.lower() not in list(STOP_WORDS):
-            if word.text.lower() not in punctuation:
-                if word.text not in word_frequencies.keys():
-                    word_frequencies[word.text] = 1
-                else:
-                    word_frequencies[word.text] += 1
+
+def count_word_frequencies(doc):
+    """
+    This function takes in the doc object and returns a dictionary of word frequencies
+    with words as keys and their frequency as values
+    """
+    word_frequencies = {}
+    return {word.text: word_frequencies.get(word.text, 0) + 1 for word in doc}
+
+
+def filter_stop_words_and_punctuation(word_frequencies):
+    """
+    This function takes in a dictionary of word frequencies and filters out the stop words and punctuation
+    and returns a dictionary of filtered word frequencies.
+    """
+    return {word: freq for word, freq in word_frequencies.items()
+            if word.lower() not in list(STOP_WORDS) and word.lower() not in punctuation}
+
+
+def normalize_frequencies(word_frequencies):
+    """
+    This function takes in a dictionary of word frequencies and normalizes them
+    by diving each frequency by the maximum frequency
+    """
     max_frequency = max(word_frequencies.values())
-    for word in word_frequencies.keys():
-        word_frequencies[word] = word_frequencies[word]/max_frequency
-    return word_frequencies
+    return {word: freq/max_frequency for word, freq in word_frequencies.items()}
 
 
 # Function to calculate sentence scores
 def calculate_sentence_scores(doc, word_frequencies):
-    sentence_tokens = [sent for sent in doc.sents]
-    sentence_scores = {}
-    for sent in sentence_tokens:
-        for word in sent:
-            if word.text.lower() in word_frequencies.keys():
-                if sent not in sentence_scores.keys():
-                    sentence_scores[sent] = word_frequencies[word.text.lower()]
-                else:
-                    sentence_scores[sent] += word_frequencies[word.text.lower()]
-    return sentence_scores
+    """
+    This function takes in the doc object and a dictionary of word frequencies
+    and returns a dictionary of sentence scores with sentences as keys and their scores as values
+    """
+    return {sent: sum(word_frequencies.get(word.text.lower(), 0) for word in sent) for sent in
+            [sent for sent in doc.sents]}
 
 
 # Function to create the summary
 def extractive_summarizer(text, per, nlp):
+    """
+    This function takes in the text, the percentage and the nlp object,
+    and returns a summary of the text
+    """
     doc = nlp(text)
     word_frequencies = process_text(text, nlp)
     sentence_scores = calculate_sentence_scores(doc, word_frequencies)
-    sentence_tokens = [sent for sent in doc.sents]
-    select_length = int(len(sentence_tokens)*per)
-    summary = nlargest(select_length, sentence_scores, key=sentence_scores.get)
-    final_summary = [word.text for word in summary]
-    summary = ''.join(final_summary)
-    summary = " ".join(summary.split())
+    summary = generate_summary(text, per, nlp, sentence_scores)
+    return summary
 
+
+# The function to generate summary
+def generate_summary(text, per, nlp, sentence_scores):
+    """
+    This function takes in the text, the percentage, the nlp object, and
+    a dictionary of sentence scores and generates a summary of the text by selecting the top
+    sentences based on their scores and returning them as a concatenated string.
+    """
+    select_length = int(len([sent for sent in nlp(text).sents])*per)
+    summary = ' '.join(" ".join(sent.text for sent in
+                                nlargest(select_length, sentence_scores, key=sentence_scores.get)).split())
     return summary
 
 
