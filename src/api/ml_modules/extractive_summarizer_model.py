@@ -8,32 +8,15 @@ from heapq import nlargest
 def process_text(text, nlp):
     doc = nlp(text)
     word_frequencies = {}
-
-    for word in doc:
-        if word.text.lower() not in list(STOP_WORDS):
-            if word.text.lower() not in punctuation:
-                if word.text not in word_frequencies.keys():
-                    word_frequencies[word.text] = 1
-                else:
-                    word_frequencies[word.text] += 1
+    word_frequencies = {word.text: word_frequencies.get(word.text, 0) + 1 for word in doc if word.text.lower()
+                        not in list(STOP_WORDS) and word.text.lower() not in punctuation}
     max_frequency = max(word_frequencies.values())
-    for word in word_frequencies.keys():
-        word_frequencies[word] = word_frequencies[word]/max_frequency
-    return word_frequencies
+    return {word: freq/max_frequency for word, freq in word_frequencies.items()}
 
 
-# Function to calculate sentence scores
 def calculate_sentence_scores(doc, word_frequencies):
-    sentence_tokens = [sent for sent in doc.sents]
-    sentence_scores = {}
-    for sent in sentence_tokens:
-        for word in sent:
-            if word.text.lower() in word_frequencies.keys():
-                if sent not in sentence_scores.keys():
-                    sentence_scores[sent] = word_frequencies[word.text.lower()]
-                else:
-                    sentence_scores[sent] += word_frequencies[word.text.lower()]
-    return sentence_scores
+    return {sent: sum(word_frequencies.get(word.text.lower(), 0) for word in sent) for sent in
+            [sent for sent in doc.sents]}
 
 
 # Function to create the summary
@@ -41,13 +24,8 @@ def extractive_summarizer(text, per, nlp):
     doc = nlp(text)
     word_frequencies = process_text(text, nlp)
     sentence_scores = calculate_sentence_scores(doc, word_frequencies)
-    sentence_tokens = [sent for sent in doc.sents]
-    select_length = int(len(sentence_tokens)*per)
-    summary = nlargest(select_length, sentence_scores, key=sentence_scores.get)
-    final_summary = [word.text for word in summary]
-    summary = ''.join(final_summary)
-    summary = " ".join(summary.split())
-
+    select_length = int(len([sent for sent in doc.sents])*per)
+    summary = ' '.join(" ".join(sent.text for sent in nlargest(select_length, sentence_scores, key=sentence_scores.get)).split())
     return summary
 
 
