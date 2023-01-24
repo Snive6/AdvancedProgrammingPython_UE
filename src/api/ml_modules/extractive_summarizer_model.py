@@ -14,6 +14,7 @@ def process_text(text, nlp):
     return {word: freq/max_frequency for word, freq in word_frequencies.items()}
 
 
+# Function to calculate sentence scores
 def calculate_sentence_scores(doc, word_frequencies):
     return {sent: sum(word_frequencies.get(word.text.lower(), 0) for word in sent) for sent in
             [sent for sent in doc.sents]}
